@@ -49,22 +49,40 @@ public class BinomialHeap
 			}
 
 		}
-//		HeapNode children = this.min.child.next, currNodes = this.min.next;
-//		this.min.child.next = null;
-//		BinomialHeap nextMin = new BinomialHeap(currNodes), minChild = new BinomialHeap(children);
-//		while(currNodes != this.min && minChild){
-//			nextMin.meld(minChild);
-//
-//			nextMin.last.next = currNodes.next;
-//
-//			nextMin = new BinomialHeap(currNodes.next);
-//			minChild = new BinomialHeap(children.next);
-//
-//			currNodes = currNodes.next;
-//			children = children.next;
-//		}
+		HeapNode children = this.min.child.next, currNodes = this.min.next;
+		this.min.child.next = null;
 
+		BinomialHeap[] heaps = new BinomialHeap[this.last.rank];
+
+		while(currNodes != this.min){
+			heaps[currNodes.rank] = new BinomialHeap(currNodes);
+			currNodes = currNodes.next;
+		}
+
+		while (children != null) {
+			BinomialHeap minChild = new BinomialHeap(children);
+
+			while(heaps[minChild.min.rank] != null){
+				minChild.meld(heaps[minChild.min.rank]);
+			}
+			heaps[minChild.min.rank] = minChild;
+			children = children.next;
+		}
+
+		BinomialHeap[] newHeap = new BinomialHeap(heaps.length);
+		int index = 0;
+		for (int i = 0; i < heaps.length; i++) {
+			if(heaps[i]){
+				newHeap[index++] = heaps[i];
+			}
+		}
+
+		for (int i = 0; i < index-1; i++) {
+			newHeap[i].min.next = newHeap[i+1].min;
+		}
+		this.last= newHeap[index-1];
 		this.min=min;
+		this.last.next = this.min;
 		return;
 
 	}
@@ -88,7 +106,17 @@ public class BinomialHeap
 	 * 
 	 */
 	public void decreaseKey(HeapItem item, int diff) 
-	{    
+	{
+
+		item.key  = item.key - diff;
+
+		HeapNode node = item.node, tmp = null;
+		while(node.parent && node.item.key < node.parent.item.key){
+
+			node.parent.item.switchItems(node.item);
+
+			node = node.parent;
+		}
 		return;
 	}
 
@@ -210,6 +238,17 @@ public class BinomialHeap
 			this.info = info;
 			this.key = key;
 			this.node = node;
+		}
+
+		public void switchItems(HeapItem item){
+			int tmpKey = this.key;
+			String tmpInfo = this.info;
+
+			this.key = item.key;
+			this.info = item.info;
+
+			item.key = tmpKey;
+			item.info = tmpInfo;
 		}
 	}
 }
