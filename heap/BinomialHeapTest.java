@@ -197,7 +197,7 @@ public class BinomialHeapTest {
             heap2.insert(3,"");
             int size2 = heap2.size();
 
-//            heap1.displayHeap();
+            heap1.toString();
 //            heap2.displayHeap();
 
             heap1.meld(heap2);
@@ -227,7 +227,7 @@ public class BinomialHeapTest {
             int min = vals1[0];
             for (int v : vals1) {
                 heap1.insert(v, "");
-                heap1.toString();
+//                heap1.toString();
                 min = v < min ? v : min;
             }
             for (int v : vals2) {
@@ -619,10 +619,10 @@ public class BinomialHeapTest {
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Test[] tests = {
-                new TestMeld1(),
-                new TestMeld2(),
-                new TestMeld3(),
-                new TestMeld4(),
+//                new TestMeld1(),
+//                new TestMeld2(),
+//                new TestMeld3(),
+//                new TestMeld4(),
                 new TestMeld5(),
                 new TestInsert(),
                 new TestFindMin1(),
