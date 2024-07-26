@@ -151,26 +151,32 @@ public class BinomialHeap {
         }while (tmp != start);
 
         HeapNode heap2Node = heap2.last.next;
-        start = heap2.last;
+//        start = heap2.last;
         heap2.last.next = null;
         int rank = 0;
-        while(heap2Node != start){
+        for (int i = 0; i <= heap2.last.rank; i++) {
+
             tmp = heap2Node;
             BinomialHeap heap2Child = new BinomialHeap(heap2Node);
             rank = heap2Child.min.rank;
 
-            while (rank < heaps.length  && heaps[rank] != null) {
-                BinomialHeap tree = heaps[rank];
+            for (int j = rank; j < heaps.length && heaps[j] != null; j++) {
+//                if(heaps[j] != null){
+            //(rank < heaps.length  && heaps[rank] != null) {
+                BinomialHeap tree = heaps[j];
                 if (heap2Child.min.item.key < tree.min.item.key) {
                     meld2Roots(heap2Child.min, tree.min);
                 }else{
                     meld2Roots(tree.min, heap2Child.min);
                     heap2Child = tree;
                 }
-                heap2Child.size = (int)Math.pow(2, heap2Child.min.rank);
-                heaps[rank] = null;
+//                heap2Child.size = (int)Math.pow(2, heap2Child.min.rank);
+                heaps[j] = null;
                 rank += 1;
+//                }
             }
+            if (rank == heaps.length)
+                rank-=1;
             heaps[rank] = heap2Child;
             heap2Node = tmp.next;
         }//while (tmp != start);
@@ -209,7 +215,7 @@ public class BinomialHeap {
                 newMin = newHeap[i].min;
             }
             newHeap[i].min.next = newHeap[i + 1].min;
-            newHeap[i].min.rank = i;
+//            newHeap[i].min.rank = i;
             size += (int)Math.pow(2, newHeap[i].min.rank);
         }
 
