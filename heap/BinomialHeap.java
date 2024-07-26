@@ -148,17 +148,18 @@ public class BinomialHeap {
              tmp = curr.next;
             heaps[curr.rank] = new BinomialHeap(curr, curr.rank);
             curr = tmp;
-        }while (curr != start);
+        }while (tmp != start);
 
         HeapNode heap2Node = heap2.last.next;
-        start = heap2Node;
+        start = heap2.last;
         heap2.last.next = null;
-        do  {
+        int rank = 0;
+        while(heap2Node != start){
+            tmp = heap2Node;
             BinomialHeap heap2Child = new BinomialHeap(heap2Node);
+            rank = heap2Child.min.rank;
 
-            int rank = heap2Child.min.rank;
-
-            while (heaps[rank] != null) {
+            while (rank < heaps.length  && heaps[rank] != null) {
                 BinomialHeap tree = heaps[rank];
                 if (heap2Child.min.item.key < tree.min.item.key) {
                     meld2Roots(heap2Child.min, tree.min);
@@ -166,12 +167,13 @@ public class BinomialHeap {
                     meld2Roots(tree.min, heap2Child.min);
                     heap2Child = tree;
                 }
+                heap2Child.size = (int)Math.pow(2, heap2Child.min.rank);
                 heaps[rank] = null;
-                rank = heap2Child.min.rank;
+                rank += 1;
             }
             heaps[rank] = heap2Child;
-            heap2Node = heap2Node.next;
-        }while (heap2Node != start);
+            heap2Node = tmp.next;
+        }//while (tmp != start);
         connectRoots(heaps);
 
 		return;
