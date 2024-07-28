@@ -27,14 +27,15 @@ public class BinomialHeap {
     private void update_fields(HeapNode node) {
         HeapNode min = node, start = node;
         this.size += 1;
-        while(node.next != null && node.next != start){
+        while(node.next != null && node != start.next){
             if(min.item.key > node.item.key){
                 min = node;
             }
 //            this.size += (int) (Math.pow(2, node.rank));
             node = node.next;
         }
-        this.min = min;
+        if(this.min == null || this.min.item.key > min.item.key)
+            this.min = min;
 //        this.last = node;
         this.last.next = start;
     }
@@ -90,7 +91,7 @@ public class BinomialHeap {
         HeapNode children = this.min.child.next;
         i.next = this.min.next;
 
-        BinomialHeap childTree = new BinomialHeap(children);
+        BinomialHeap childTree = new BinomialHeap(children, children.rank);
         this.meld(childTree);
 
 
@@ -142,6 +143,7 @@ public class BinomialHeap {
 
         if(heap2.size == 0) return;
         if(this.size == 0){
+            this.last = heap2.min;
             update_fields(heap2.min);
             return;
         }
@@ -162,7 +164,7 @@ public class BinomialHeap {
         heap2.last.next = null;
         for (int i = 0; i < heap2rank; i++) {
 
-            tmp = heap2Node;
+            tmp = heap2Node.next;
             BinomialHeap heap2Child = new BinomialHeap(heap2Node);
             rank = heap2Child.min.rank;
 
@@ -186,7 +188,7 @@ public class BinomialHeap {
 //            if (rank == heaps.length)
 //                rank-=1;
             heaps[rank] = heap2Child;
-            heap2Node = tmp.next;
+            heap2Node = tmp;
         }//while (tmp != start);
         connectRoots(heaps);
 
@@ -215,7 +217,7 @@ public class BinomialHeap {
                 newHeap[index++] = heap;
             }
         }
-        HeapNode newMin = newHeap[index - 1].min;
+        HeapNode newMin = newHeap[index - 1].min; //.item.key < newHeap[0].min.item.key ? newHeap[index - 1].min : newHeap[0].min;
 //        int size = 0;
 
         for (int i = 0; i < index - 1; i++) {
