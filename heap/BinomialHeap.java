@@ -98,23 +98,47 @@ public class BinomialHeap {
             this.min = null;
             return;
         }
-        int curr = this.min.item.key, min = -Integer.MAX_VALUE;
-        HeapNode i = this.min.next;
+        int curr = this.min.item.key, trees = this.numTrees();
+        HeapNode i = this.min.next, min = this.min.next;
         boolean changeLast = false;
         if (this.min == this.last)
+        {
+            if(trees == 1){
+                this.last = this.last.child;
+                curr = this.last.item.key;
+                i= this.last.next;
+                min = this.last;
+                this.size -= 1;
+            }
             changeLast = true;
+        }
         do {
+            if(i.item.key < min.item.key){
+                min = i;
+            }
             i = i.next;
-        } while (i.next.item.key != curr);
+
+        } while (i.item.key != curr);
+
+        if(trees == 1){
+            this.min = min;
+            return;
+        }
 
         HeapNode children = this.min.child;//.next);
         this.size -= (int) Math.pow(2, this.min.rank);
-        if (changeLast)
+
+        if (changeLast){
             this.last = i;
+        }
         i.next = this.min.next;
+
+
         if (this.min.rank != 0) {
             BinomialHeap childTree = new BinomialHeap(children, children.rank);
             this.meld(childTree);
+        }else{
+            this.min = min;
         }
     }
 
@@ -177,10 +201,10 @@ public class BinomialHeap {
         HeapNode heap2Node = heap2.last.next;
 //        start = heap2.last;
         int rank = 0, heap2roots = heap2.numTrees();
-        if(heap2roots==1)
-            heap2roots--; // max rank in insertion=0, loop needs to run once
+//        if(heap2roots==1)
+//            heap2roots--; // max rank in insertion=0, loop needs to run once
         //heap2.last.next = null;
-        for (int i = 0; i <= heap2roots; i++) {
+        for (int i = 0; i < heap2roots; i++) {
 
             tmp = heap2Node.next;
             BinomialHeap heap2Child = new BinomialHeap(heap2Node);
