@@ -98,48 +98,74 @@ public class BinomialHeap {
             this.min = null;
             return;
         }
-        int curr = this.min.item.key, trees = this.numTrees();
-        HeapNode i = this.min.next, min = this.min.next;
-        boolean changeLast = false;
-        if (this.min == this.last)
-        {
-            if(trees == 1){
-                this.last = this.last.child;
-                curr = this.last.item.key;
-                i= this.last.next;
-                min = this.last;
-                this.size -= 1;
-            }
-            changeLast = true;
-        }
-        do {
-            if(i.item.key < min.item.key){
-                min = i;
-            }
-            i = i.next;
-
-        } while (i.item.key != curr);
-
+        HeapNode minNode = this.min;
+        int trees = this.numTrees();
         if(trees == 1){
-            this.min = min;
-            return;
+            this.last = this.min.child;
+
         }
 
-        HeapNode children = this.min.child;//.next);
+        // Process children of the min node
+        HeapNode child = minNode.child;
+        HeapNode newMin = child;
+        if (child != null) {
+
+            do {
+                HeapNode nextChild = child.next;
+                child.parent = null;
+                if(child.item.key < newMin.item.key){
+                    newMin = child;
+                }
+                child = nextChild;
+            } while (child != minNode.child);
+
+            if(trees == 1){
+                this.last = minNode.child;
+                this.min = newMin;
+                this.size -= 1;
+                return;
+            }
+        }
+
+        HeapNode current = this.last;
+        newMin = this.last;
+        HeapNode nextCurr = null;
+        do {
+            if (current.next == minNode) {
+                current.next = minNode.next;
+            }
+            nextCurr = current.next;
+            if(current.item.key < newMin.item.key){
+                newMin = current;
+            }
+            current = nextCurr;
+        } while (current.next != this.last.next && current != this.last);
+
+
         this.size -= (int) Math.pow(2, this.min.rank);
 
-        if (changeLast){
-            this.last = i;
+        // If there are new roots, meld them into the current heap
+        if (minNode.rank != 0) {
+            BinomialHeap newHeap = new BinomialHeap(minNode.child, minNode.child.rank);
+            this.meld(newHeap);
+        }else {
+            this.min = newMin;
         }
-        i.next = this.min.next;
 
-
-        if (this.min.rank != 0) {
-            BinomialHeap childTree = new BinomialHeap(children, children.rank);
-            this.meld(childTree);
-        }else{
-            this.min = min;
-        }
+//        // Find new minimum node
+//        if (this.last != null) {
+//            current = this.last.next;
+//            HeapNode newMin = current;
+//            do {
+//                if (current.item.key < newMin.item.key) {
+//                    newMin = current;
+//                }
+//                current = current.next;
+//            } while (current != this.last.next);
+//            this.min = newMin;
+//        } else {
+//            this.min = null;
+//        }
     }
 
     /**
@@ -302,7 +328,7 @@ public class BinomialHeap {
         do {
             count++;
             start=start.next;
-        }while (start!=this.last);
+        }while (start!=this.last.next);
 //
 //        for (HeapNode i = this.min.next; i.item.key != this.min.item.key; i = i.next) {
 //            count++;
@@ -313,6 +339,7 @@ public class BinomialHeap {
     public void print_r() {
         {
             int s;
+            if(this.last == null){return;}
             if(this.last.rank == 0){s = 1;}
             else if(this.last.rank == 1){s = 2;}
             else if(this.last.rank == 2){s = 3;}
