@@ -22,6 +22,7 @@ public class BinomialHeap {
     //Build Heap with Single root
     public BinomialHeap(HeapNode node){
         this.size = (int) Math.pow(2, node.rank);
+        node.parent = null;
         this.min = node;
         this.last = node;
         this.last.next = this.min;
@@ -100,31 +101,22 @@ public class BinomialHeap {
         }
         HeapNode minNode = this.min;
         int trees = this.numTrees();
-        if(trees == 1){
-            this.last = this.min.child;
-
-        }
-
-        // Process children of the min node
         HeapNode child = minNode.child;
         HeapNode newMin = child;
-        if (child != null) {
+        if(trees == 1){
 
             do {
                 HeapNode nextChild = child.next;
-                child.parent = null;
                 if(child.item.key < newMin.item.key){
                     newMin = child;
                 }
                 child = nextChild;
             } while (child != minNode.child);
 
-            if(trees == 1){
-                this.last = minNode.child;
-                this.min = newMin;
-                this.size -= 1;
-                return;
-            }
+            this.last = minNode.child;
+            this.min = newMin;
+            this.size -= 1;
+            return;
         }
 
         HeapNode current = this.last;
@@ -152,20 +144,6 @@ public class BinomialHeap {
             this.min = newMin;
         }
 
-//        // Find new minimum node
-//        if (this.last != null) {
-//            current = this.last.next;
-//            HeapNode newMin = current;
-//            do {
-//                if (current.item.key < newMin.item.key) {
-//                    newMin = current;
-//                }
-//                current = current.next;
-//            } while (current != this.last.next);
-//            this.min = newMin;
-//        } else {
-//            this.min = null;
-//        }
     }
 
     /**
@@ -217,7 +195,7 @@ public class BinomialHeap {
         BinomialHeap[] heaps = new BinomialHeap[Math.max(this.last.rank, heap2.last.rank) +2];
 
         HeapNode curr = this.last.next, start = curr, tmp = curr.next;
-//        this.last.next = null;
+
          do{
              tmp = curr.next;
             heaps[curr.rank] = new BinomialHeap(curr);
@@ -225,11 +203,9 @@ public class BinomialHeap {
         }while (tmp != start);
 
         HeapNode heap2Node = heap2.last.next;
-//        start = heap2.last;
+
         int rank = 0, heap2roots = heap2.numTrees();
-//        if(heap2roots==1)
-//            heap2roots--; // max rank in insertion=0, loop needs to run once
-        //heap2.last.next = null;
+
         for (int i = 0; i < heap2roots; i++) {
 
             tmp = heap2Node.next;
@@ -237,8 +213,7 @@ public class BinomialHeap {
             rank = heap2Child.min.rank;
 
             for (int j = rank; j < heaps.length && heaps[j] != null; j++) {
-//                if(heaps[j] != null){
-            //(rank < heaps.length  && heaps[rank] != null) {
+
 
                 BinomialHeap tree = heaps[j];
                 if (heap2Child.min.item.key < tree.min.item.key) {
@@ -247,17 +222,16 @@ public class BinomialHeap {
                     meld2Roots(tree.min, heap2Child.min);
                     heap2Child = tree;
                 }
-//                heap2Child.size = (int)Math.pow(2, heap2Child.min.rank);
+
                 heaps[j] = null;
-                ;
-//                }
+
                 rank +=1;
             }
-//            if (rank == heaps.length)
-//                rank-=1;
+
             heaps[rank] = heap2Child;
             heap2Node = tmp;
-        }//while (tmp != start);
+        }
+
         connectRoots(heaps);
 
 		return;
@@ -328,11 +302,8 @@ public class BinomialHeap {
         do {
             count++;
             start=start.next;
-        }while (start!=this.last.next);
-//
-//        for (HeapNode i = this.min.next; i.item.key != this.min.item.key; i = i.next) {
-//            count++;
-//        }
+        }while (start != this.last.next);
+
         return count;
     }
 
