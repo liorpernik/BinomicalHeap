@@ -10,6 +10,8 @@ public class BinomialHeap {
     public int size;
     public HeapNode last;
     public HeapNode min;
+    public int links;
+    public int deletedRanks;
 
 
     public BinomialHeap() {
@@ -71,6 +73,7 @@ public class BinomialHeap {
         HeapItem item = new HeapItem(node, key, info);
         node.item = item;
         node.rank = 0;
+
         if (this.last != null) {
             if (this.last.next.rank == 0) {
                 BinomialHeap heap0 = new BinomialHeap(node);
@@ -81,10 +84,12 @@ public class BinomialHeap {
 //                this.last.next
                 this.last.next = node;
                 this.update_fields(node,1);
+                this.links ++;
             }
         } else {
             this.last = node;
             this.update_fields(node,1);
+            this.links ++;
         }
         return item;
     }
@@ -99,6 +104,7 @@ public class BinomialHeap {
             this.min = null;
             return;
         }
+        this.deletedRanks += this.min.rank;
         HeapNode minNode = this.min;
         int trees = this.numTrees();
         HeapNode child = minNode.child;
@@ -222,7 +228,7 @@ public class BinomialHeap {
                     meld2Roots(tree.min, heap2Child.min);
                     heap2Child = tree;
                 }
-
+                this.links++;
                 heaps[j] = null;
 
                 rank +=1;
