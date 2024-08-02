@@ -274,6 +274,7 @@ public class BinomialHeap {
             if (newHeap[i].min.item.key < newMin.item.key) {
                 newMin = newHeap[i].min;
             }
+            this.links++;
             newHeap[i].min.next = newHeap[i + 1].min;
         }
         this.last = newHeap[index - 1].min;
