@@ -25,6 +25,7 @@ public class BinomialHeap {
     public BinomialHeap(HeapNode node){
         this.size = (int) Math.pow(2, node.rank);
         node.parent = null;
+//        links--;
         this.min = node;
         this.last = node;
         this.last.next = this.min;
@@ -84,13 +85,13 @@ public class BinomialHeap {
 //                this.last.next
                 this.last.next = node;
                 this.update_fields(node,1);
-                this.links ++;
+//                this.links ++;
             }
         } else {
             this.last = node;
             this.update_fields(node,1);
-            this.links ++;
         }
+        this.links ++;
         return item;
     }
 
@@ -104,6 +105,7 @@ public class BinomialHeap {
             this.min = null;
             return;
         }
+        links -= 1;
         this.deletedRanks += this.min.rank;
         HeapNode minNode = this.min;
         int trees = this.numTrees();
@@ -130,6 +132,7 @@ public class BinomialHeap {
         HeapNode nextCurr = null;
         do {
             if (current.next == minNode) {
+
                 current.next = minNode.next;
             }
             nextCurr = current.next;
@@ -216,6 +219,7 @@ public class BinomialHeap {
 
             tmp = heap2Node.next;
             BinomialHeap heap2Child = new BinomialHeap(heap2Node);
+
             rank = heap2Child.min.rank;
 
             for (int j = rank; j < heaps.length && heaps[j] != null; j++) {
@@ -228,7 +232,7 @@ public class BinomialHeap {
                     meld2Roots(tree.min, heap2Child.min);
                     heap2Child = tree;
                 }
-                this.links++;
+//                this.links++;
                 heaps[j] = null;
 
                 rank +=1;
@@ -274,7 +278,7 @@ public class BinomialHeap {
             if (newHeap[i].min.item.key < newMin.item.key) {
                 newMin = newHeap[i].min;
             }
-            this.links++;
+//            this.links++;
             newHeap[i].min.next = newHeap[i + 1].min;
         }
         this.last = newHeap[index - 1].min;
