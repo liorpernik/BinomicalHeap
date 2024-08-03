@@ -233,10 +233,17 @@ public class BinomialHeap {
 
         // Update the size of the current heap
         this.size += heap2.size;
+
         // Prepare an array to hold binomial heaps of different ranks
         BinomialHeap[] heaps = new BinomialHeap[Math.max(this.last.rank, heap2.last.rank) +2];
 
-        HeapNode curr = this.last.next, start = curr, tmp = curr.next;
+        HeapNode curr = this.last.next, start, tmp;
+        boolean meld2 = false;
+        if(heap2.numTrees() > this.numTrees()){
+            curr = heap2.last.next;
+            meld2 = true;
+        }
+        start = curr;
 
         // Traverse through the current tree's roots and store each tree according to rank in the array
          do{
@@ -245,9 +252,9 @@ public class BinomialHeap {
             curr = tmp;
         }while (tmp != start);
 
-        HeapNode heap2Node = heap2.last.next;
+        HeapNode heap2Node = meld2 ? this.last.next : heap2.last.next;
 
-        int rank = 0, heap2roots = heap2.numTrees();
+        int rank = 0, heap2roots = meld2 ? this.numTrees() : heap2.numTrees();
         // Traverse through the second heap's roots
         for (int i = 0; i < heap2roots; i++) {
 
