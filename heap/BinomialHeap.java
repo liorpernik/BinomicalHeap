@@ -238,6 +238,7 @@ public class BinomialHeap {
         BinomialHeap[] heaps = new BinomialHeap[Math.max(this.last.rank, heap2.last.rank) +2];
 
         HeapNode curr = this.last.next, start, tmp;
+        // meld smaller tree to bigger one by number of trees (default meld heap2 to this)
         boolean meld2 = false;
         if(heap2.numTrees() > this.numTrees()){
             curr = heap2.last.next;
