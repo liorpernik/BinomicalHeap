@@ -5,23 +5,24 @@ import java.util.Random;
 public class Test {
 
     public static void main(String[] args) {
-        BinomialHeap tree = new BinomialHeap();
         long start = 0, end = 0;
 
         for (int j = 1; j < 6; j++) {
-//            int[] arr = generateRandom((int)Math.pow(3, j+7));
+            BinomialHeap tree = new BinomialHeap();
+            int[] arr = generateRandom((int)Math.pow(3, j+7));
             System.out.println("size: " + Math.pow(3, j + 7));
             start = System.nanoTime();
             //test1
-            for (int i = 0; i < 50; i++)//Math.pow(3, j + 7); i++) {
-                tree.insert(i, "");
+//            int max = (int)Math.pow(3, j + 7);
+//            for (int i = 1; i < max; i++) {
+//                tree.insert(i, "");}
 
             //test2
-//            for (int i = 1; i < Math.pow(3, j+7); i++)
-//                tree.insert(arr[i], "");
-//            for (int i = 0; i < (Math.pow(3, j+7))/2; i++) {
-//                tree.deleteMin();
-//            }
+            for (int i = 1; i < Math.pow(3, j+7); i++)
+                tree.insert(arr[i], "");
+            for (int i = 1; i < (Math.pow(3, j+7))/2; i++) {
+                tree.deleteMin();
+            }
 //
             //test3
 //            for (int i = 1; i < Math.pow(3, j+7); i++)
@@ -36,7 +37,7 @@ public class Test {
             System.out.println("links:" + tree.links);
             System.out.println("num of tree: " + tree.numTrees());
             System.out.println("rank of deleted " + tree.deletedRanks);
-            tree.printRanks();
+//            tree.printRanks();
         }
 //        }
     }
