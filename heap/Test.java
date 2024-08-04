@@ -31,12 +31,14 @@ public class Test {
 //                tree.deleteMin();
 //            }
 
-            end  = System.nanoTime();
-            System.out.println("time is: " + (end - start)/ 1_000_000);
-            System.out.println("links:" + tree.links);
-            System.out.println("num of tree: " + tree.numTrees());
-            System.out.println(tree.links);
-            System.out.println("rank of deleted " + tree.deletedRanks);
+//            end  = System.nanoTime();
+//            System.out.println("time is: " + (end - start)/ 1_000_000);
+//            System.out.println("links:" + tree.links);
+//            System.out.println("num of tree: " + tree.numTrees());
+//            System.out.println(tree.links);
+//            System.out.println("rank of deleted " + tree.deletedRanks);
+            tree.printRanks();
+
         }
 
     }

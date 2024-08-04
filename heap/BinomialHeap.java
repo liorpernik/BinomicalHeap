@@ -361,6 +361,18 @@ public class BinomialHeap {
         }
     }
 
+    public void printRanks() {
+        HeapNode node=this.last;
+        int sum=0;
+        do{
+            node=node.next;
+            System.out.println(node.rank);
+            sum+=(int)Math.pow(2,node.rank);
+        }while(node!=last);
+        System.out.println("curr size according to root ranks: "+sum);
+
+    }
+
     /**
      * Class implementing a node in a Binomial Heap.
      */
