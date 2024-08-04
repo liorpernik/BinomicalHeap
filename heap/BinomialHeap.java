@@ -76,7 +76,9 @@ public class BinomialHeap {
         HeapItem item = new HeapItem(node, key, info);
         node.item = item;
         node.rank = 0;
-
+        if(this.min != null && key < this.min.item.key){
+            this.min = node;
+        }
         if (this.last != null) {
             if (this.last.next.rank == 0) {
                 BinomialHeap heap0 = new BinomialHeap(node);
@@ -324,7 +326,7 @@ public class BinomialHeap {
     // Recursively meld trees with the same rank
     private HeapNode meldTrees(HeapNode h1, HeapNode h2) {
 
-        if(h1 ==null || h2 == null){
+        if(h1.next == h1 || h2.next == h2){
             return null;
         }
         if (h1.rank < h2.rank) {
@@ -343,13 +345,13 @@ public class BinomialHeap {
     // Merge two trees of the same rank
     private HeapNode meldSameRank(HeapNode h1, HeapNode h2) {
         if (h1.item.key <= h2.item.key) {
-            h2.next = h1.child;
+            h2.next = h1.child == null ? h2 : h1.child;
             h1.child = h2;
             h2.parent = h1;
             h1.rank++;
             return h1;
         } else {
-            h1.next = h2.child;
+            h1.next = h2.child == null ? h1 : h2.child;
             h2.child = h1;
             h1.parent = h2;
             h2.rank++;
