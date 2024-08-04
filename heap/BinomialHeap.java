@@ -189,103 +189,188 @@ public class BinomialHeap {
         this.deleteMin();
     }
 
-    /**
-     * Meld the heap with heap2
-     */
-    public void meld(BinomialHeap heap2) {
+//    /**
+//     * Meld the heap with heap2
+//     */
+//    public void meld(BinomialHeap heap2) {
+//
+//
+//        if (heap2.size == 0) return;
+//        if (this.size == 0) {
+//            this.last = heap2.min;
+//            update_fields(heap2.min, 1);
+//            return;
+//        }
+//        this.size += heap2.size;
+////        BinomialHeap[] heaps = new BinomialHeap[Math.max(this.last.rank, heap2.last.rank) + 2];
+//        int maxRank = Math.max(this.last.rank, heap2.last.rank) + 2;
+//        HeapNode curr = this.last.next, start2, start1,tmp = null, temp = null;
+//
+//        boolean meld2 = false;
+//        if(heap2.numTrees() > this.numTrees()){
+//            curr = heap2.last.next;
+//            meld2 = true;
+//        }
+//        start1 = curr;
+////        do {
+////            tmp = curr.next;
+////            heaps[curr.rank] = new BinomialHeap(curr);
+////            curr = tmp;
+////        } while (tmp != start);
+//
+//        HeapNode heap2Node = meld2 ? this.last.next : heap2.last.next;
+//
+//        int rank = 0, heap2roots = heap2.numTrees();
+//
+//        start2 = heap2Node;
+////        do {
+//
+////            tmp = heap2Node.next;
+////            BinomialHeap heap2Child = new BinomialHeap(heap2Node);
+//
+//            rank = heap2Node.rank;
+//
+//            while (rank < maxRank && curr.rank == heap2Node.rank && start2 != tmp) {//heaps[rank] != null
+//
+//                temp = curr.next;
+//                tmp = heap2Node.next;
+////                BinomialHeap tree = heaps[rank];
+//                if (heap2Node.item.key < curr.item.key) {
+//                    meld2Roots(heap2Node, curr);
+//                    curr = temp;
+//                } else {
+//                    meld2Roots(curr, heap2Node);
+//                    heap2Node = tmp;
+//                }
+////                this.links++;
+////                heaps[rank] = null;
+//
+//                rank += 1;
+//            }
+//
+////            heaps[rank] = heap2Child;
+//            heap2Node = tmp;
+////        } while (tmp != start && tmp.rank < maxRank);
+//
+//        while (temp != start1){
+//            temp = curr.next;
+//            if(curr.rank == temp.rank){
+//                if (temp.item.key < curr.item.key) {
+//                    meld2Roots(temp, curr);
+////                    curr = temp;
+//                } else {
+//                    meld2Roots(curr, temp);
+////                    heap2Node = tmp;
+//                }
+//            }
+//            curr = temp;
+//        }
+//
+//
+////        connectRoots(heaps);
+//
+//        return;
+//    }
+//
+//
+//    private void meld2Roots(HeapNode first, HeapNode second) {
+//        links++;
+//        first.parent = null;
+//        HeapNode tmp = second;
+//        second.parent = first;
+//        if (first.child != null) {
+//            tmp = first.child.next;
+//            first.child.next = second;
+//        }
+//        second.next = tmp;
+//        first.child = second;
+//        first.rank = first.rank + 1;
+//        HeapNode fchild = first.child.next;// child with rank 0
+//        for (HeapNode c = fchild; c.rank > 0 && c != second; c = c.next)
+//            c.rank++;
+//    }
+//
+//    private void connectRoots(BinomialHeap[] heaps) {
+//        BinomialHeap[] newHeap = new BinomialHeap[heaps.length];
+//        int index = 0;
+//        for (BinomialHeap heap : heaps) {
+//            if (heap != null) {
+//                newHeap[index++] = heap;
+//            }
+//        }
+//        HeapNode newMin = newHeap[index - 1].min;
+//
+//        for (int i = 0; i < index - 1; i++) {
+//            if (newHeap[i].min.item.key < newMin.item.key) {
+//                newMin = newHeap[i].min;
+//            }
+////            this.links++;
+//            newHeap[i].min.next = newHeap[i + 1].min;
+//        }
+//        this.last = newHeap[index - 1].min;
+//        this.min = newMin;
+//        this.last.next = newHeap[0].min;
+//    }
 
 
-        if (heap2.size == 0) return;
-        if (this.size == 0) {
-            this.last = heap2.min;
-            update_fields(heap2.min, 1);
-            return;
-        }
-        this.size += heap2.size;
-        BinomialHeap[] heaps = new BinomialHeap[Math.max(this.last.rank, heap2.last.rank) + 2];
+    // Meld two binomial heaps
+    public BinomialHeap meld(BinomialHeap other) {
+        BinomialHeap result = new BinomialHeap();
+        this.last = meldTrees(this.last.next, other.last.next);
 
-        HeapNode curr = this.last.next, start = curr, tmp = curr.next;
-
-        do {
-            tmp = curr.next;
-            heaps[curr.rank] = new BinomialHeap(curr);
-            curr = tmp;
-        } while (tmp != start);
-
-        HeapNode heap2Node = heap2.last.next;
-
-        int rank = 0, heap2roots = heap2.numTrees();
-
-        for (int i = 0; i < heap2roots; i++) {
-
-            tmp = heap2Node.next;
-            BinomialHeap heap2Child = new BinomialHeap(heap2Node);
-
-            rank = heap2Child.min.rank;
-
-            for (int j = rank; j < heaps.length && heaps[j] != null; j++) {
-
-
-                BinomialHeap tree = heaps[j];
-                if (heap2Child.min.item.key < tree.min.item.key) {
-                    meld2Roots(heap2Child.min, tree.min);
-                } else {
-                    meld2Roots(tree.min, heap2Child.min);
-                    heap2Child = tree;
-                }
-//                this.links++;
-                heaps[j] = null;
-
-                rank += 1;
-            }
-
-            heaps[rank] = heap2Child;
-            heap2Node = tmp;
-        }
-
-        connectRoots(heaps);
-
-        return;
+        return result;
     }
 
+    // Recursively meld trees with the same rank
+    private HeapNode meldTrees(HeapNode h1, HeapNode h2) {
 
-    private void meld2Roots(HeapNode first, HeapNode second) {
-        links++;
-        HeapNode tmp = second;
-        second.parent = first;
-        if (first.child != null) {
-            tmp = first.child.next;
-            first.child.next = second;
+        if(h1 ==null || h2 == null){
+            return null;
         }
-        second.next = tmp;
-        first.child = second;
-        first.rank = first.rank + 1;
-        HeapNode fchild = first.child.next;// child with rank 0
-        for (HeapNode c = fchild; c.rank > 0 && c != second; c = c.next)
-            c.rank++;
+        if (h1.rank < h2.rank) {
+            h1.next = meldTrees(h1.next, h2);
+            return h1;
+        } else if (h1.rank > h2.rank) {
+            h2.next = meldTrees(h1, h2.next);
+            return h2;
+        } else {
+            HeapNode mergedTree = meldSameRank(h1, h2);
+            mergedTree.next = meldTrees(h1.next, h2.next);
+            return mergedTree;
+        }
     }
 
-    private void connectRoots(BinomialHeap[] heaps) {
-        BinomialHeap[] newHeap = new BinomialHeap[heaps.length];
-        int index = 0;
-        for (BinomialHeap heap : heaps) {
-            if (heap != null) {
-                newHeap[index++] = heap;
-            }
+    // Merge two trees of the same rank
+    private HeapNode meldSameRank(HeapNode h1, HeapNode h2) {
+        if (h1.item.key <= h2.item.key) {
+            h2.next = h1.child;
+            h1.child = h2;
+            h2.parent = h1;
+            h1.rank++;
+            return h1;
+        } else {
+            h1.next = h2.child;
+            h2.child = h1;
+            h1.parent = h2;
+            h2.rank++;
+            return h2;
         }
-        HeapNode newMin = newHeap[index - 1].min;
-
-        for (int i = 0; i < index - 1; i++) {
-            if (newHeap[i].min.item.key < newMin.item.key) {
-                newMin = newHeap[i].min;
-            }
-//            this.links++;
-            newHeap[i].min.next = newHeap[i + 1].min;
-        }
-        this.last = newHeap[index - 1].min;
-        this.min = newMin;
-        this.last.next = newHeap[0].min;
     }
+
+    // Find the minimum node in the circular list
+    private HeapNode findMin(HeapNode node) {
+        if (node == null) return null;
+        HeapNode min = node;
+        HeapNode current = node.next;
+        while (current != node) {
+            if (current.item.key < node.item.key) {
+                min = current;
+            }
+            current = current.next;
+        }
+        return min;
+    }
+
 
     /**
      * Return the number of elements in the heap
@@ -387,6 +472,32 @@ public class BinomialHeap {
             this.rank = 0;
             this.next = null;
         }
+
+//        public void addChild(HeapNode tree) {
+//            if (this.child == null) {
+//                this.child = tree;
+//            } else {
+//                HeapNode fChild=this.child.next;
+//                this.child.next = tree;
+//                tree.next=fChild;
+//                tree.parent=this;
+//            }
+//            this.rank++;
+//        }
+
+        public void addChild(HeapNode tree) {
+            if (this.child == null) {
+                this.child = tree;
+                tree.next = tree; // Circular list with one element
+            } else {
+                HeapNode fChild = this.child.next;
+                this.child.next = tree;
+                tree.next = fChild;
+            }
+            tree.parent = this;
+            this.rank++;
+        }
+
     }
 
     /**
