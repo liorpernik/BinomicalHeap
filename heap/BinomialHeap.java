@@ -98,6 +98,7 @@ public class BinomialHeap {
             this.update_fields(node, 1);
         }
 
+
         return item;
     }
 
@@ -134,19 +135,20 @@ public class BinomialHeap {
 
         boolean isMinLast = this.last == this.min;
         HeapNode current = this.last;
-        newMin = this.last.next;
+        newMin = this.min.next;
         HeapNode nextCurr = null;
         do {
             if (current.next == minNode) {
 
                 current.next = minNode.next;
-
+                if(isMinLast) current =current.next;
             }
-            nextCurr = current.next;
+//            nextCurr = ;
             if (current.item.key < newMin.item.key) {
                 newMin = current;
+                newMin.next = current.next;
             }
-            current = nextCurr;
+            current = current.next;
         } while (current.next != this.last);
 
         if (isMinLast) {
@@ -158,17 +160,17 @@ public class BinomialHeap {
         // If there are new roots, meld them into the current heap
         if (minNode.rank != 0) {
             BinomialHeap newHeap = new BinomialHeap(minNode.child, minNode.child.rank);
-            this.min = newMin.item.key < newHeap.min.item.key ? newMin : newHeap.min;
 
+            this.min = newMin.item.key < newHeap.min.item.key ? newMin : newHeap.min;
             if (newHeap.numTrees() < this.numTrees()) {
                 this.meld(newHeap);
             } else {
                 newHeap.meld(this);
                 this.clone(newHeap);
             }
-        } else {
+        }else
             this.min = newMin;
-        }
+
 
     }
 
@@ -221,28 +223,39 @@ public class BinomialHeap {
         do {
             if(melded==temp)
                 temp = melded.next;
+
             if (melded.rank < curr.rank) {
-                prev.next = melded;
-                melded.next = curr;
+                HeapNode copy = new HeapNode(melded);
+                prev.next = copy;
+                copy.next = curr;
+
+//                prev = prev.next;
+                curr = copy;
             } else if (melded.rank > curr.rank) {
                 if (curr == this.last) {
                     prev = curr;
                     curr.next = melded;
                     curr = melded;
-                    continue;
+//                    break;
+                }else {
+
+                    prev = prev.next;
+                    curr =curr.next;
+//                    curr.next = curr.next.rank < melded.rank ?  : curr.nextmelded;
                 }
-                prev.next = curr;
-                curr.next = melded;
+                continue;
 
             }else if (melded.rank == curr.rank) {
                 links++;
                 nextroot = curr.next;
 
                 if (melded.item.key < curr.item.key) {
-                    if (melded == this.min)
-                        this.min = curr;
-              }
+
+
                     curr.item.switchItems(melded.item);
+//                    if (melded.item.key <= this.min.item.key)
+//                        this.min = curr;
+                }
                     curr.addChild(melded);
 
                 if (curr != nextroot) {
@@ -250,15 +263,19 @@ public class BinomialHeap {
                         prev.next = nextroot;
                         melded = curr; //melded.parent != null ? melded.parent : melded;
                         curr = nextroot;
-                        if (melded == curr) break;
+
                         continue;
                     }else
                         {
                             prev = curr;
                             prev.next = nextroot;
                             curr = nextroot;
+//                            if (curr == this.last) {break;}
                     }
                 } }
+
+            if (curr.item.key <= this.min.item.key)
+                this.min = curr;
 //
 
 
@@ -268,7 +285,7 @@ public class BinomialHeap {
 //            temp = temp.next;
             i++;
     } while(i < heap2Trees);
-     heap2.last.next = heap2.last;
+//     heap2.last.next = heap2.last;
 //    this.last = this.last.rank > Math.max(melded.rank,prev.rank) ? this.last : melded.rank > prev.rank ? melded : prev;
 //    start.next = this.last.next;
 //    this.last.next = start;

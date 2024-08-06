@@ -9,21 +9,23 @@ public class Test {
 
         for (int j = 1; j < 6; j++) {
             BinomialHeap tree = new BinomialHeap();
-            int[] arr = generateRandom((int)Math.pow(3, j+7));
+//            int[] arr = generateRandom((int)Math.pow(3, j+7));//
             System.out.println("size: " + Math.pow(3, j + 7));
             start = System.nanoTime();
             //test1
-//            int max = (int)Math.pow(3, j + 7);
-//            for (int i = 1; i < max; i++) {
-//                tree.insert(i, "");}
+            int max = (int)Math.pow(3, j + 7);
+            for (int i = 1; i < max; i++) {
+                tree.insert(i, "");}
 
-            //test2
-            for (int i = 1; i < Math.pow(3, j+7); i++)
-                tree.insert(arr[i], "");
-            for (int i = 1; i < (Math.pow(3, j+7))/2; i++) {
+            //test2(Math.pow(3, j+7))/2
+//            for (int i = 1; i < Math.pow(3, j+7); i++)
+//                tree.insert(arr[i], "");
+            tree.printRanks();
+            for (int i = 1; i < 32; i++) {
                 tree.deleteMin();
+                System.out.println("min: " + tree.min.item.key);
             }
-//
+
             //test3
 //            for (int i = 1; i < Math.pow(3, j+7); i++)
 //                tree.insert((int)Math.pow(3, j+7) - i, "");
@@ -37,7 +39,7 @@ public class Test {
             System.out.println("links:" + tree.links);
             System.out.println("num of tree: " + tree.numTrees());
             System.out.println("rank of deleted " + tree.deletedRanks);
-//            tree.printRanks();
+            tree.printRanks();
         }
 //        }
     }
@@ -46,10 +48,10 @@ public class Test {
             int[] arr = new int[n];
             int x;
             Random random = new Random();
-            for (int i = 0; i < n; i++) {
+            for (int i = 1; i < n; i++) {
                 do {
                     x = random.nextInt(n + 1);
-                } while (Arrays.binarySearch(arr, x) >= 0);
+                } while (Arrays.binarySearch(Arrays.stream(arr).sorted().toArray(),x) >= 0);
                 arr[i] = x;
             }
             return arr;
