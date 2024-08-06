@@ -10,7 +10,7 @@ public class BinomialHeap {
     public int size;
     public HeapNode last;
     public HeapNode min;
-    public int links;
+    public static int links;
     public int deletedRanks;
 
 
@@ -79,7 +79,9 @@ public class BinomialHeap {
         node.item = item;
         node.rank = 0;
 
-
+        if(this.min==null || key < this.min.item.key){
+            this.min = node;
+        }
         if (this.last != null) {
             if (this.last.next.rank == 0) {
                 BinomialHeap heap0 = new BinomialHeap(node);
@@ -95,10 +97,7 @@ public class BinomialHeap {
             this.last = node;
             this.update_fields(node, 1);
         }
-        //this.links ++;
-        if(key < this.min.item.key){
-            this.min = node;
-        }
+
         return item;
     }
 
@@ -154,7 +153,7 @@ public class BinomialHeap {
             current.next = minNode.next;
             this.last = current;
         }
-        this.size = size_of_ranks(current);
+        this.size -=(int)Math.pow(2, minNode.rank);// size_of_ranks(current);
 
         // If there are new roots, meld them into the current heap
         if (minNode.rank != 0) {
@@ -220,7 +219,8 @@ public class BinomialHeap {
         HeapNode curr = this.last.next, melded = heap2.last.next, temp = melded, start = this.last.next, nextroot, prev = this.last,switchN;//thisstart=this.last.next;
         int heap2Trees=heap2.numTrees(),i=0;
         do {
-            temp = melded.next;
+            if(melded==temp)
+                temp = melded.next;
             if (melded.rank < curr.rank) {
                 prev.next = melded;
                 melded.next = curr;
@@ -233,31 +233,18 @@ public class BinomialHeap {
                 }
                 prev.next = curr;
                 curr.next = melded;
-//                prev = prev.next;
 
             }else if (melded.rank == curr.rank) {
                 links++;
                 nextroot = curr.next;
 
                 if (melded.item.key < curr.item.key) {
-
-
-
-//                    HeapNode copy = new HeapNode(curr);
-//                    curr = new HeapNode(melded);
-//                    curr.addChild(copy);
-//                    prev.next = curr;
-//                    curr.next = nextroot;
-
+                    if (melded == this.min)
+                        this.min = curr;
+              }
                     curr.item.switchItems(melded.item);
-//                    curr.addChild();
-//                    if (melded.item == start.item) {
-//                        start = curr;
-//                    }
-                }
-//                else {
                     curr.addChild(melded);
-//                }
+
                 if (curr != nextroot) {
                     if (curr.rank == nextroot.rank) {
                         prev.next = nextroot;
@@ -377,7 +364,7 @@ public int numTrees() {
     return count;
 }
 
-//
+/**
     public String toString() {
         if (this.empty()) {
             return "Heap is empty";
@@ -419,6 +406,7 @@ public int numTrees() {
             } while (child != node.child);
         }
     }
+ */
 public void print_r() {
     {
         int s;
