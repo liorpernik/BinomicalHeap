@@ -134,14 +134,14 @@ public class BinomialHeap {
         }
 
         boolean isMinLast = this.last == this.min;
-        HeapNode current = this.last;
+        HeapNode current = this.min.next;
         newMin = this.min.next;
         HeapNode nextCurr = null;
         do {
             if (current.next == minNode) {
 
                 current.next = minNode.next;
-                if(isMinLast) current =current.next;
+//                if(isMinLast) current =current.next;
             }
 //            nextCurr = ;
             if (current.item.key < newMin.item.key) {
@@ -149,12 +149,12 @@ public class BinomialHeap {
                 newMin.next = current.next;
             }
             current = current.next;
-        } while (current.next != this.last);
+        } while (current != this.min.next);
 
-        if (isMinLast) {
-            current.next = minNode.next;
-            this.last = current;
-        }
+//        if (isMinLast) {
+//            current.next = minNode.next;
+//            this.last = current;
+//        }
         this.size -=(int)Math.pow(2, minNode.rank);// size_of_ranks(current);
 
         // If there are new roots, meld them into the current heap
@@ -224,6 +224,7 @@ public class BinomialHeap {
             if(melded==temp)
                 temp = melded.next;
 
+
             if (melded.rank < curr.rank) {
                 HeapNode copy = new HeapNode(melded);
                 prev.next = copy;
@@ -234,18 +235,27 @@ public class BinomialHeap {
             } else if (melded.rank > curr.rank) {
                 if (curr == this.last) {
                     prev = curr;
+                    nextroot = curr.next;
                     curr.next = melded;
                     curr = melded;
-//                    break;
+                    heap2.last.next = nextroot;
+                    this.last = heap2.last;
+                    if(heap2.min.item.key < this.min.item.key){
+                        this.min = heap2.min;
+                    }
+//                    melded.next = nextroot;
+                    break;
                 }else {
 
                     prev = prev.next;
                     curr =curr.next;
 //                    curr.next = curr.next.rank < melded.rank ?  : curr.nextmelded;
                 }
+                if (curr.item.key <= this.min.item.key)
+                    this.min = curr;
                 continue;
 
-            }else if (melded.rank == curr.rank) {
+            }else if (melded.rank == curr.rank ) {
                 links++;
                 nextroot = curr.next;
 
@@ -257,6 +267,7 @@ public class BinomialHeap {
 //                        this.min = curr;
                 }
                     curr.addChild(melded);
+
 
                 if (curr != nextroot) {
                     if (curr.rank == nextroot.rank) {
@@ -270,14 +281,13 @@ public class BinomialHeap {
                             prev = curr;
                             prev.next = nextroot;
                             curr = nextroot;
-//                            if (curr == this.last) {break;}
                     }
                 } }
-
             if (curr.item.key <= this.min.item.key)
                 this.min = curr;
-//
-
+//          else if(melded.item.key <= this.min.item.key){
+//                this.min = melded;
+//            }
 
 //        prev = prev.next;
             melded = temp;
@@ -381,26 +391,26 @@ public int numTrees() {
     return count;
 }
 
-/**
-    public String toString() {
-        if (this.empty()) {
-            return "Heap is empty";
-        }
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("BinomialHeap\n");
-
-        BinomialHeap.HeapNode current = this.last;
-        do {
-            if (current != null) {
-                sb.append("Tree with root: ").append(current.item.key).append("\n");
-                appendTree(sb, current, "", true);
-                current = current.next;
-            }
-        } while (current != this.last && current.next != current);
-
-        return sb.toString();
-    }
+//    public String toString() {
+//        if (this.empty()) {
+//            return "Heap is empty";
+//        }
+//
+//        StringBuilder sb = new StringBuilder();
+//        sb.append("BinomialHeap\n");
+//
+//        BinomialHeap.HeapNode current = this.last;
+//        do {
+//            if (current != null) {
+//                sb.append("Tree with root: ").append(current.item.key).append("\n");
+//                appendTree(sb, current, "", true);
+//                current = current.next;
+//            }
+//        } while (current != this.last && current.next != current);
+//
+//        return sb.toString();
+//    }
 
     private void appendTree(StringBuilder sb, BinomialHeap.HeapNode node, String indent, boolean last) {
         if (node == null) return;
@@ -423,7 +433,7 @@ public int numTrees() {
             } while (child != node.child);
         }
     }
- */
+
 public void print_r() {
     {
         int s;
