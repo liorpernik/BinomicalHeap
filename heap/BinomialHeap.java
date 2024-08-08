@@ -10,7 +10,7 @@ public class BinomialHeap {
     public int size;
     public HeapNode last;
     public HeapNode min;
-    public static int links;
+    public static int links = 0;
     public int deletedRanks;
 
 
@@ -55,13 +55,15 @@ public class BinomialHeap {
     private void update_fields(HeapNode node, int size) {
         HeapNode min = node, start = size != 1 ? node.next : node;
         this.size += size;
-//        while (node.next != null && node != start.next) {
-//            if (min.item.key > node.item.key) {
-//                min = node;
-//            }
-//            node = node.next;
-//        }
-        min = findNewMin(node);
+        if (node.next != null) {
+            do {
+                if (min.item.key > node.item.key) {
+                    min = node;
+                }
+                node = node.next;
+            } while (node.next != null && node != start.next);
+        }
+//        min = findNewMin(node);
         if (this.min == null || this.min.item.key > min.item.key)
             this.min = min;
 //        this.last = node;
@@ -135,14 +137,15 @@ public class BinomialHeap {
             return;
         }
 
-        boolean isMinLast = this.last == this.min;
+//        boolean isMinLast = this.last == this.min;
         HeapNode current = this.min.next;
-        newMin = this.min.next;
-        HeapNode nextCurr = null;
+
+//        HeapNode nextCurr = null;
         do {
             if (current.next == minNode) {
 
                 current.next = minNode.next;
+//                break;
 //                if(isMinLast) current =current.next;
             }
 //            nextCurr = ;
@@ -152,11 +155,12 @@ public class BinomialHeap {
             }
             current = current.next;
         } while (current != this.min.next);
-
+//        newMin = findNewMin(current);
 //        if (isMinLast) {
 //            current.next = minNode.next;
 //            this.last = current;
 //        }
+        newMin = deleteMinAndFindNewMin(this.last, this.min);
         this.size -=(int)Math.pow(2, minNode.rank);// size_of_ranks(current);
 
         // If there are new roots, meld them into the current heap
@@ -174,6 +178,41 @@ public class BinomialHeap {
             this.min = newMin;
 
 
+    }
+    public static HeapNode deleteMinAndFindNewMin(HeapNode lastNode, HeapNode minNode) {
+//        if (lastNode == null || lastNode.next == lastNode) {
+//            return null; // The list is empty or has only one node
+//        }
+
+        // If the minNode is the last node, we need to update the lastNode reference
+        if (lastNode == minNode) {
+            // Find the node before the lastNode (minNode)
+            HeapNode current = lastNode;
+            while (current.next != lastNode) {
+                current = current.next;
+            }
+            lastNode = current;
+        }
+
+        // Bypass the minNode
+        HeapNode current = lastNode;
+        while (current.next != minNode) {
+            current = current.next;
+        }
+        current.next = minNode.next;
+
+        // Now find the new minimum node
+        HeapNode newMinNode = current; // Start from the node next to the bypassed node
+        HeapNode start = current;
+
+        do {
+            if (current.item.key < newMinNode.item.key) {
+                newMinNode = current;
+            }
+            current = current.next;
+        } while (current != start);
+
+        return newMinNode;
     }
 
     /**
@@ -220,10 +259,10 @@ public class BinomialHeap {
             return;
         }
         this.size += heap2.size;
-        HeapNode curr = this.last.next, melded = heap2.last.next, temp = melded, start = this.last.next, nextroot, prev = this.last, minChild;//thisstart=this.last.next;
+        HeapNode curr = this.last.next, melded = heap2.last.next, temp = melded, start = heap2.last.next, nextroot, prev = this.last, minChild;//thisstart=this.last.next;
         int heap2Trees=heap2.numTrees(),i=0;
         do {
-            if(melded==temp && curr.next != melded)
+            if(melded==temp )//&& curr.next != melded
                 temp = melded.next;
 
 
@@ -233,6 +272,12 @@ public class BinomialHeap {
                 copy.next = curr;
 
 //                prev = prev.next;
+//                if(i == heap2Trees-1) {
+//                    this.last = curr;
+//                    if(this.last.item.key <= this.min.item.key){
+//                        this.min = this.last;
+//                    }
+//                }
                 curr = copy;
             } else if (melded.rank > curr.rank) {
                 if (curr == this.last) {
@@ -248,9 +293,19 @@ public class BinomialHeap {
 //                    melded.next = nextroot;
                     break;
                 }else {
+//                    if(curr.next == curr){
+//                        curr.next = melded;
+//                        prev.next = curr;
+//                        if (i == heap2Trees -1){
+////                            melded.next = curr;
+//                            this.last = melded;
+////                            break;
+//                        }
+//                    }
 
                     prev = prev.next;
-                    curr =curr.next;
+                    curr = curr.next;
+
 //                    curr.next = curr.next.rank < melded.rank ?  : curr.nextmelded;
                 }
                 continue;
@@ -262,54 +317,51 @@ public class BinomialHeap {
                 if (melded.item.key < curr.item.key) {
 
 //                    curr.next = null;
-//                    swapNodes(melded, curr);
+                    swapNodes(melded, curr);
 //                    melded.addChild(curr);
 
+
+                }
+//                else{
 //                    HeapNode copy = new HeapNode(melded);
-//                    copy.next = nextroot;
-//                    curr = copy;
-                    curr.next = melded;
-                    melded.next = nextroot;
-                    nextroot = melded;
-//                    nextroot = curr;
-//                    curr = melded;
-//                    prev = prev.next;
-
-//                    curr.item.switchItems(melded.item);
-                    //find melded childs min if < curr.key than switch
-//                    if(melded.child != null){
-//                        minChild = findNewMin(melded.child);
-//                        if( minChild.item.key< melded.item.key){
-//                            melded.item.switchItems(minChild.item);
-//                        }
-//                    }
-                }
-                else{
-
-                    links++;
+//                    curr = linking(curr, copy);
                     curr.addChild(melded);
-                }
+//                }
+//                if(nextroot.rank < curr.rank){
+//                    if(nextroot == this.last)
+//                    {
+//                        prev = curr;
+//                    }
+//
+//                    nextroot = curr;
+//                }
+                curr.next = nextroot;
+                prev.next = curr;
+
+//                prev = curr;
 
 
                 if (curr != nextroot) {
                     if (curr.rank == nextroot.rank) {
+
                         prev.next = nextroot;
-                        melded = curr; //melded.parent != null ? melded.parent : melded;
+                        melded =curr; //melded.parent != null ? melded.parent : melded;//
                         curr = nextroot;
 
                         continue;
                     }else
                         {
-                            prev = curr;
+//                            nextroot = curr.next;
+//                            if(nextroot.rank < curr.rank){
+//                                nextroot = curr;
+//                            }
+                            prev = prev.next;
                             prev.next = nextroot;
                             curr = nextroot;
                     }
                 } }
             if (curr.item.key <= this.min.item.key)
                 this.min = curr;
-//          else if(melded.item.key <= this.min.item.key){
-//                this.min = melded;
-//            }
 
 //        prev = prev.next;
             melded = temp;
@@ -317,21 +369,6 @@ public class BinomialHeap {
 //            temp = temp.next;
             i++;
     } while(i < heap2Trees);
-//     heap2.last.next = heap2.last;
-//    this.last = this.last.rank > Math.max(melded.rank,prev.rank) ? this.last : melded.rank > prev.rank ? melded : prev;
-//    start.next = this.last.next;
-//    this.last.next = start;
-//        start = prev;
-//        prev = prev.next;
-//        do {
-//            if (prev.rank > this.last.rank) {
-//                this.last = prev;
-//            }
-//            if(prev.rank < this.last.next.rank){
-//                this.last.next = prev;
-//            }
-//            prev = prev.next;
-//        } while (prev != start && prev.next != prev);
 
     }
 
@@ -422,11 +459,32 @@ public int numTrees() {
 
     return count;
 }
+
+    public HeapNode linking(HeapNode root, HeapNode second) {
+
+        if (second.item.key < root.item.key) {
+            HeapNode temp = root;
+            root = second;
+            second = temp;
+        }
+
+        if (root.child == null) {
+            root.child = second;
+            root.child.next = root.child;
+        } else {
+            HeapNode fChild = root.child.next;
+            second.next = fChild;
+            root.child.next = second;
+            root.child = second;
+        }
+        second.parent = root;
+        root.rank++;
+
+        links++;
+        return root;
+    }
+
     public void swapNodes(HeapNode node1, HeapNode node2){
-        // Swap the parent pointers
-//        HeapNode tempParent = node1.parent;
-//        node1.parent = node2.parent;
-//        node2.parent = tempParent;
 
         // Swap the child pointers
         HeapNode tempChild = node1.child;
@@ -434,10 +492,6 @@ public int numTrees() {
         node2.child = tempChild;
 
         node1.item.switchItems(node2.item);
-        // Swap the next pointers
-//        HeapNode tempNext = node1.next;
-//        node1.next = node2.next;
-//        node2.next = tempNext;
 
     }
 
