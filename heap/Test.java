@@ -9,24 +9,24 @@ public class Test {
 
         for (int j = 1; j < 6; j++) {
             BinomialHeap tree = new BinomialHeap();
-//            int[] arr = generateRandom((int)Math.pow(3, j+7));//
+            int[] arr = generateRandom((int)Math.pow(3, j+7));//
             System.out.println("size: " + Math.pow(3, j + 7));
             start = System.nanoTime();
             //test1
-            int max = 64;//(int)Math.pow(3, j + 7);
-            for (int i = 1; i < max; i++) {
-                tree.insert(i, "");}
+//            int max = 64;//(int)Math.pow(3, j + 7);
+//            for (int i = 1; i < max; i++) {
+//                tree.insert(i, "");}
 
 //            test2(Math.pow(3, j+7))/2
-//            for (int i = 1; i < Math.pow(3, j+7); i++)
-//                tree.insert(arr[i], "");
+            for (int i = 1; i < Math.pow(3, j+7); i++)
+                tree.insert(arr[i], "");
             System.out.println("links:" + tree.links);
             tree.printRanks();
-//            int[] sorted = Arrays.stream(arr).sorted().toArray();
+            int[] sorted = Arrays.stream(arr).sorted().toArray();
             for (int i = 1; i < 32; i++) {
                 tree.deleteMin();
                 System.out.println("min: " + tree.min.item.key);
-                System.out.println("real min: " + (i+1));
+                System.out.println("real min: " + sorted[i+1]);
             }
 
             //test3
